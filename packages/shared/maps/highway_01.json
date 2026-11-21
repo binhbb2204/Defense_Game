@@ -1,0 +1,162 @@
+{
+  "id": "highway_01",
+  "name": "Collapsed Highway 01",
+  "version": 1,
+  "bounds": {
+    "width": 96,
+    "depth": 72
+  },
+  "baseHp": 100,
+  "startingCash": 450,
+  "defaultRoadWidth": 5.2,
+  "waypoints": [
+    { "x": -44, "y": 0, "z": -22, "roadWidth": 5.4 },
+    { "x": -30, "y": 0, "z": -22, "roadWidth": 5.4 },
+    { "x": -20, "y": 0, "z": -16, "roadWidth": 5.2 },
+    { "x": -16, "y": 0, "z": -4, "roadWidth": 5.2 },
+    { "x": -12, "y": 2.2, "z": 2, "roadWidth": 5.0, "isOverpass": true },
+    { "x": -7, "y": 4.6, "z": 4, "roadWidth": 5.0, "isOverpass": true },
+    { "x": 4, "y": 4.6, "z": 4, "roadWidth": 5.0, "isOverpass": true },
+    { "x": 14, "y": 2.2, "z": 0, "roadWidth": 5.0, "isOverpass": true },
+    { "x": 20, "y": 0, "z": -10, "roadWidth": 5.2 },
+    { "x": 14, "y": 0, "z": -21, "roadWidth": 5.2 },
+    { "x": 2, "y": 0, "z": -22, "roadWidth": 5.2 },
+    { "x": -4, "y": 0, "z": -14, "roadWidth": 5.0 },
+    { "x": -4, "y": 0, "z": 4, "roadWidth": 5.0 },
+    { "x": -4, "y": 0, "z": 10, "roadWidth": 5.0, "isTunnel": true },
+    { "x": -4, "y": 0, "z": 22, "roadWidth": 5.0, "isTunnel": true },
+    { "x": 8, "y": 0, "z": 24, "roadWidth": 5.2 },
+    { "x": 24, "y": 0, "z": 20, "roadWidth": 5.4 },
+    { "x": 42, "y": 0, "z": 18, "roadWidth": 5.6 }
+  ],
+  "obstacles": [
+    {
+      "id": "container_west_red",
+      "kind": "container",
+      "position": { "x": -24, "y": 1.5, "z": -12 },
+      "size": { "x": 6.4, "y": 3.0, "z": 2.6 },
+      "rotationY": 0.25,
+      "blocksLoS": true,
+      "color": "#9b332c"
+    },
+    {
+      "id": "container_west_blue",
+      "kind": "container",
+      "position": { "x": -25, "y": 1.5, "z": -8.6 },
+      "size": { "x": 6.4, "y": 3.0, "z": 2.6 },
+      "rotationY": 0.15,
+      "blocksLoS": true,
+      "color": "#2f5778"
+    },
+    {
+      "id": "container_west_stack",
+      "kind": "container",
+      "position": { "x": -24.5, "y": 4.5, "z": -10.3 },
+      "size": { "x": 6.4, "y": 3.0, "z": 2.6 },
+      "rotationY": 0.2,
+      "blocksLoS": true,
+      "color": "#4f6246"
+    },
+    {
+      "id": "jersey_wall_north",
+      "kind": "wall",
+      "position": { "x": -10.2, "y": 1.3, "z": -14 },
+      "size": { "x": 0.9, "y": 2.6, "z": 9.8 },
+      "rotationY": 0,
+      "blocksLoS": true,
+      "color": "#6f747a"
+    },
+    {
+      "id": "blast_wall_east",
+      "kind": "wall",
+      "position": { "x": 16, "y": 1.7, "z": 12.5 },
+      "size": { "x": 9.5, "y": 3.4, "z": 1.0 },
+      "rotationY": -0.3,
+      "blocksLoS": true,
+      "color": "#656a70"
+    },
+    {
+      "id": "overpass_pillar_west",
+      "kind": "pillar",
+      "position": { "x": -8.2, "y": 2.2, "z": 4.0 },
+      "size": { "x": 1.5, "y": 4.4, "z": 5.4 },
+      "rotationY": 0,
+      "blocksLoS": true,
+      "color": "#5d6166"
+    },
+    {
+      "id": "overpass_pillar_east",
+      "kind": "pillar",
+      "position": { "x": 1.4, "y": 2.2, "z": 4.0 },
+      "size": { "x": 1.5, "y": 4.4, "z": 5.4 },
+      "rotationY": 0,
+      "blocksLoS": true,
+      "color": "#5d6166"
+    },
+    {
+      "id": "tunnel_wall_left",
+      "kind": "tunnel_shell",
+      "position": { "x": -7.35, "y": 2.1, "z": 16.0 },
+      "size": { "x": 0.9, "y": 4.2, "z": 12.2 },
+      "rotationY": 0,
+      "blocksLoS": true,
+      "color": "#484d54"
+    },
+    {
+      "id": "tunnel_wall_right",
+      "kind": "tunnel_shell",
+      "position": { "x": -0.65, "y": 2.1, "z": 16.0 },
+      "size": { "x": 0.9, "y": 4.2, "z": 12.2 },
+      "rotationY": 0,
+      "blocksLoS": true,
+      "color": "#484d54"
+    },
+    {
+      "id": "tunnel_roof",
+      "kind": "tunnel_shell",
+      "position": { "x": -4.0, "y": 4.5, "z": 16.0 },
+      "size": { "x": 7.6, "y": 0.7, "z": 12.2 },
+      "rotationY": 0,
+      "blocksLoS": true,
+      "color": "#3d4249"
+    },
+    {
+      "id": "container_east_choke",
+      "kind": "container",
+      "position": { "x": 28, "y": 1.5, "z": 11.5 },
+      "size": { "x": 6.4, "y": 3.0, "z": 2.6 },
+      "rotationY": -0.15,
+      "blocksLoS": true,
+      "color": "#8f6928"
+    }
+  ],
+  "elevatedZones": [
+    {
+      "id": "rooftop_warehouse_nw",
+      "label": "Warehouse Roof (High Ground)",
+      "kind": "rooftop",
+      "position": { "x": -30, "y": 5.6, "z": 3 },
+      "size": { "x": 12, "y": 5.6, "z": 10 },
+      "rotationY": 0,
+      "allowedCategories": ["sniper", "explosive", "support"]
+    },
+    {
+      "id": "rooftop_depot_ne",
+      "label": "Logistics Depot Roof",
+      "kind": "rooftop",
+      "position": { "x": 30, "y": 5.0, "z": -14 },
+      "size": { "x": 11, "y": 5.0, "z": 11 },
+      "rotationY": 0,
+      "allowedCategories": ["sniper", "explosive", "support"]
+    },
+    {
+      "id": "watchtower_south",
+      "label": "South Overlook Tower",
+      "kind": "watchtower",
+      "position": { "x": 14, "y": 7.2, "z": 30 },
+      "size": { "x": 6.5, "y": 7.2, "z": 6.5 },
+      "rotationY": 0,
+      "allowedCategories": ["sniper", "support"]
+    }
+  ]
+}

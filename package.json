@@ -1,0 +1,12 @@
+{
+  "name": "tactical-zombie-td",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "pnpm --filter @tactical-td/client dev",
+    "build": "pnpm --filter @tactical-td/client build",
+    "typecheck": "pnpm -r typecheck",
+    "tauri:dev": "pnpm --filter @tactical-td/client tauri:dev",
+    "tauri:build": "pnpm --filter @tactical-td/client tauri:build"
+  }
+}

@@ -1,0 +1,49 @@
+[
+  {
+    "waveNumber": 1,
+    "name": "Recon Outbreak",
+    "clearBonus": 100,
+    "groups": [
+      { "zombieType": "normal", "count": 10, "interval": 1.15, "startDelay": 0.5 }
+    ]
+  },
+  {
+    "waveNumber": 2,
+    "name": "Highway Rush",
+    "clearBonus": 140,
+    "groups": [
+      { "zombieType": "normal", "count": 12, "interval": 0.9, "startDelay": 0.4 },
+      { "zombieType": "speedy", "count": 6, "interval": 0.65, "startDelay": 6.0 }
+    ]
+  },
+  {
+    "waveNumber": 3,
+    "name": "Riot Breach",
+    "clearBonus": 200,
+    "groups": [
+      { "zombieType": "armored", "count": 4, "interval": 2.4, "startDelay": 0.5 },
+      { "zombieType": "normal", "count": 14, "interval": 0.75, "startDelay": 2.0 },
+      { "zombieType": "speedy", "count": 8, "interval": 0.55, "startDelay": 9.5 }
+    ]
+  },
+  {
+    "waveNumber": 4,
+    "name": "Tunnel Ambush",
+    "clearBonus": 260,
+    "groups": [
+      { "zombieType": "speedy", "count": 14, "interval": 0.42, "startDelay": 0.4 },
+      { "zombieType": "armored", "count": 6, "interval": 1.9, "startDelay": 4.0 },
+      { "zombieType": "normal", "count": 16, "interval": 0.6, "startDelay": 6.5 }
+    ]
+  },
+  {
+    "waveNumber": 5,
+    "name": "Juggernaut Vanguard",
+    "clearBonus": 400,
+    "groups": [
+      { "zombieType": "armored", "count": 5, "interval": 1.8, "startDelay": 0.5 },
+      { "zombieType": "boss", "count": 1, "interval": 1.0, "startDelay": 4.5 },
+      { "zombieType": "speedy", "count": 12, "interval": 0.5, "startDelay": 7.0 }
+    ]
+  }
+]

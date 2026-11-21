@@ -1,0 +1,21 @@
+{
+  "name": "@tactical-td/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./maps/highway_01.json": "./maps/highway_01.json",
+    "./config/zombies.json": "./config/zombies.json",
+    "./config/waves.json": "./config/waves.json",
+    "./config/towers.json": "./config/towers.json"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  }
+}
