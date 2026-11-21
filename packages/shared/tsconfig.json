@@ -3,5 +3,16 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": ["index.ts", "types/**/*.ts", "maps/**/*.json", "config/**/*.json"]
+  "include": [
+    "index.ts",
+    "types/**/*.ts",
+    "maps/**/*.ts",
+    "maps/**/*.json",
+    "towers/**/*.ts",
+    "towers/**/*.json",
+    "enemies/**/*.ts",
+    "enemies/**/*.json",
+    "waves/**/*.ts",
+    "waves/**/*.json"
+  ]
 }

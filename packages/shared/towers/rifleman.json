@@ -1,0 +1,19 @@
+{
+  "id": "rifleman",
+  "name": "Tactical Rifleman",
+  "category": "infantry",
+  "baseCost": 150,
+  "footprintRadius": 1.1,
+  "modelPath": "/models/towers/rifleman.glb",
+  "sounds": {
+    "fire": "/sounds/weapons/rifle_fire.ogg"
+  },
+  "levels": [
+    { "level": 0, "upgradeCost": 0, "damage": 12, "fireRate": 2.5, "range": 14, "turnSpeedRad": 6.5, "projectileSpeed": 55 },
+    { "level": 1, "upgradeCost": 120, "damage": 16, "fireRate": 3.0, "range": 15.5, "turnSpeedRad": 7.0, "projectileSpeed": 60 },
+    { "level": 2, "upgradeCost": 240, "damage": 22, "fireRate": 3.5, "range": 17, "turnSpeedRad": 7.5, "projectileSpeed": 65 },
+    { "level": 3, "upgradeCost": 450, "damage": 30, "fireRate": 4.2, "range": 18.5, "turnSpeedRad": 8.0, "projectileSpeed": 72 },
+    { "level": 4, "upgradeCost": 780, "damage": 42, "fireRate": 5.0, "range": 20, "turnSpeedRad": 8.5, "projectileSpeed": 80 },
+    { "level": 5, "upgradeCost": 1350, "damage": 58, "fireRate": 6.2, "range": 22, "turnSpeedRad": 9.2, "projectileSpeed": 90 }
+  ]
+}

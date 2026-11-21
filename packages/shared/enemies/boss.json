@@ -1,0 +1,19 @@
+{
+  "id": "boss",
+  "name": "Juggernaut Alpha",
+  "maxHp": 1650,
+  "armor": 0.35,
+  "speed": 2.1,
+  "radius": 0.95,
+  "height": 3.1,
+  "cashReward": 250,
+  "baseDamage": 35,
+  "color": "#b83232",
+  "modelPath": "/models/enemies/boss.glb",
+  "sounds": {
+    "hit": "/sounds/enemies/armor_ricochet.ogg",
+    "death": "/sounds/enemies/boss_death.ogg",
+    "ability": "/sounds/enemies/boss_slam.ogg"
+  },
+  "isBoss": true
+}

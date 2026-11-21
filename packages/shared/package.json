@@ -7,10 +7,10 @@
   "types": "./index.ts",
   "exports": {
     ".": "./index.ts",
-    "./maps/highway_01.json": "./maps/highway_01.json",
-    "./config/zombies.json": "./config/zombies.json",
-    "./config/waves.json": "./config/waves.json",
-    "./config/towers.json": "./config/towers.json"
+    "./maps": "./maps/index.ts",
+    "./towers": "./towers/index.ts",
+    "./enemies": "./enemies/index.ts",
+    "./waves": "./waves/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit"

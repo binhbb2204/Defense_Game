@@ -1,13 +1,14 @@
 import {
   HIGHWAY_01_MAP,
   WAVE_DEFINITIONS,
-  ZOMBIE_CONFIGS,
   type MapDefinition,
   type ZombieTypeId,
 } from '@tactical-td/shared';
+import { AssetLoader } from './core/AssetLoader';
 import { GameLoop, type LoopStats } from './core/GameLoop';
 import { World } from './core/World';
 import { ZombiePool, type ZombieRecord } from './entities/Zombie';
+import { enemyRegistry } from './entities/enemies/EnemyRegistry';
 import { PathSystem } from './systems/PathSystem';
 import { WaveManager } from './systems/WaveManager';
 import { useGameStore } from '../ui/store/useGameStore';
@@ -22,6 +23,7 @@ const INTERMISSION_SEC = 5;
  */
 export class GameEngine {
   public readonly world: World;
+  public readonly assetLoader: AssetLoader;
   public readonly loop: GameLoop;
   public readonly pathSystem: PathSystem;
   public readonly zombiePool: ZombiePool;
@@ -59,11 +61,12 @@ export class GameEngine {
     this.cash = mapData.startingCash;
 
     this.world = new World(container);
+    this.assetLoader = new AssetLoader();
     this.pathSystem = new PathSystem(mapData.waypoints, mapData.defaultRoadWidth, 512);
     this.world.buildPrototypeMap(mapData, this.pathSystem);
     this.world.setDebugVisible(this.showDebugPath);
 
-    this.zombiePool = new ZombiePool(1024);
+    this.zombiePool = new ZombiePool(1024, this.assetLoader, enemyRegistry);
     this.world.entitiesGroup.add(this.zombiePool.group);
 
     this.waveManager = new WaveManager(WAVE_DEFINITIONS, {
@@ -77,7 +80,7 @@ export class GameEngine {
         const pathLen = this.pathSystem.getTotalLength();
         let est = 0;
         for (const g of wave.groups) {
-          const speed = ZOMBIE_CONFIGS[g.zombieType].speed;
+          const speed = enemyRegistry.get(g.zombieType).config.speed;
           est = Math.max(est, g.startDelay + (g.count - 1) * g.interval + pathLen / speed);
         }
         this.waveTimeLimitSec = est;
@@ -256,8 +259,7 @@ export class GameEngine {
     zombieType: ZombieTypeId,
     laneOffset: number,
   ): void => {
-    const config = ZOMBIE_CONFIGS[zombieType];
-    this.zombiePool.spawn(config, laneOffset, this.pathSystem);
+    this.zombiePool.spawnByType(zombieType, laneOffset, this.pathSystem);
   };
 
   private readonly handleZombieReachedBase = (zombie: Readonly<ZombieRecord>): void => {
@@ -329,7 +331,8 @@ export class GameEngine {
   };
 
   private readonly onRender = (alpha: number, frameDt: number): void => {
-    this.zombiePool.syncRender(alpha);
+    const animDt = this.loop.isPaused() ? 0 : frameDt * this.loop.getTimeScale();
+    this.zombiePool.syncRender(alpha, animDt);
     this.world.updateCamera(frameDt);
     this.world.render();
   };
@@ -375,6 +378,7 @@ export class GameEngine {
   public dispose(): void {
     this.loop.stop();
     this.zombiePool.dispose();
+    this.assetLoader.dispose();
     this.world.dispose();
   }
 }

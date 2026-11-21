@@ -1,0 +1,17 @@
+{
+  "id": "normal",
+  "name": "Walker",
+  "maxHp": 65,
+  "armor": 0.0,
+  "speed": 4.2,
+  "radius": 0.45,
+  "height": 1.75,
+  "cashReward": 12,
+  "baseDamage": 4,
+  "color": "#5ea867",
+  "modelPath": "/models/enemies/normal/Normal.glb",
+  "sounds": {
+    "hit": "/sounds/enemies/flesh_hit.ogg",
+    "death": "/sounds/enemies/zombie_death.ogg"
+  }
+}

@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import type { ZombieArchetypeConfig, ZombieTypeId } from '@tactical-td/shared';
+import type { AssetLoader, LoadedModelAsset } from '../core/AssetLoader';
 import type { PathSystem } from '../systems/PathSystem';
+import { enemyRegistry, type EnemyRegistry } from './enemies/EnemyRegistry';
 
 export interface ZombieRecord {
   readonly poolIndex: number;
@@ -24,14 +26,21 @@ export interface ZombieRecord {
   readonly baseColor: THREE.Color;
 }
 
+interface ZombieRigInstance {
+  type: ZombieTypeId;
+  root: THREE.Group;
+  mixer: THREE.AnimationMixer | null;
+  action: THREE.AnimationAction | null;
+}
+
 const DEFAULT_MAX_ZOMBIES = 1024;
 const FORWARD_Z = new THREE.Vector3(0, 0, 1);
 
 /**
- * Pooled + InstancedMesh Zombie Renderer & Movement Simulator.
+ * Pooled Zombie Renderer & Movement Simulator.
  *
- * Uses 2 InstancedMeshes (body + head) for up to 1,024 concurrent zombies (2 draw calls total)
- * and zero per-frame allocations inside fixedUpdate() and syncRender().
+ * Uses loaded 3D animated rigs (FBX/GLB) when registered for a ZombieTypeId,
+ * and falls back to 2-draw-call InstancedMesh boxes for types without models yet.
  */
 export class ZombiePool {
   public readonly maxCapacity: number;
@@ -44,6 +53,14 @@ export class ZombiePool {
   private readonly bodyMesh: THREE.InstancedMesh;
   private readonly headMesh: THREE.InstancedMesh;
 
+  // Optional animated 3D rigs per poolIndex (for types that have a loaded model)
+  private readonly modelGroup = new THREE.Group();
+  private readonly modelAssets = new Map<ZombieTypeId, LoadedModelAsset>();
+  private readonly rigFreePools = new Map<ZombieTypeId, ZombieRigInstance[]>();
+  private readonly activeRigs: (ZombieRigInstance | null)[];
+  private readonly assetLoader: AssetLoader | null;
+  private readonly registry: EnemyRegistry;
+
   private nextEntityId = 1;
 
   // Pre-allocated scratch math objects (zero GC in 60Hz / 144Hz loops)
@@ -55,12 +72,20 @@ export class ZombiePool {
   private readonly _matrix = new THREE.Matrix4();
   private readonly _colorScratch = new THREE.Color();
 
-  constructor(maxCapacity = DEFAULT_MAX_ZOMBIES) {
+  constructor(
+    maxCapacity = DEFAULT_MAX_ZOMBIES,
+    assetLoader?: AssetLoader,
+    registry: EnemyRegistry = enemyRegistry,
+  ) {
     this.maxCapacity = maxCapacity;
-    this.group.name = 'ZombiePool_Instanced';
+    this.assetLoader = assetLoader ?? null;
+    this.registry = registry;
+    this.group.name = 'ZombiePool';
+    this.modelGroup.name = 'ZombiePool_3DModels';
 
     this.records = new Array(maxCapacity);
     this.freeIndices = new Array(maxCapacity);
+    this.activeRigs = new Array(maxCapacity).fill(null);
 
     for (let i = 0; i < maxCapacity; i++) {
       this.records[i] = {
@@ -87,7 +112,6 @@ export class ZombiePool {
       this.freeIndices[i] = maxCapacity - 1 - i;
     }
 
-    // Unit torso box anchored at feet (y in [0, 1]) so scaling height lifts cleanly off road
     const bodyGeo = new THREE.BoxGeometry(1, 1, 0.72);
     bodyGeo.translate(0, 0.5, 0);
     const bodyMat = new THREE.MeshStandardMaterial({
@@ -114,11 +138,46 @@ export class ZombiePool {
     this.headMesh.frustumCulled = false;
     this.headMesh.count = 0;
 
-    this.group.add(this.bodyMesh, this.headMesh);
+    this.group.add(this.bodyMesh, this.headMesh, this.modelGroup);
+
+    if (this.assetLoader) {
+      this.registry.preloadModels(this.assetLoader, (type, asset) => {
+        this.registerModel(type, asset);
+      });
+    }
+  }
+
+  public registerModel(type: ZombieTypeId, asset: LoadedModelAsset): void {
+    this.modelAssets.set(type, asset);
+    if (!this.rigFreePools.has(type)) {
+      this.rigFreePools.set(type, []);
+    }
+
+    // Upgrade any already-active zombies of this type if the model finished loading mid-wave
+    for (let i = 0; i < this.activeIndices.length; i++) {
+      const poolIdx = this.activeIndices[i];
+      const z = this.records[poolIdx];
+      if (z.type === type && !this.activeRigs[poolIdx]) {
+        this.attachRigToPoolIndex(poolIdx, type);
+      }
+    }
   }
 
   public getActiveCount(): number {
     return this.activeIndices.length;
+  }
+
+  public spawnByType(
+    type: ZombieTypeId,
+    laneOffset: number,
+    pathSystem: PathSystem,
+  ): ZombieRecord | null {
+    const archetype = this.registry.get(type);
+    const record = this.spawn(archetype.config, laneOffset, pathSystem);
+    if (record) {
+      archetype.onSpawn(record);
+    }
+    return record;
   }
 
   public spawn(
@@ -149,8 +208,38 @@ export class ZombiePool {
     z.prevPos.copy(z.currPos);
     z.inTunnel = pathSystem.isInTunnel(0);
 
+    if (this.modelAssets.has(config.id)) {
+      this.attachRigToPoolIndex(poolIndex, config.id);
+    }
+
     this.activeIndices.push(poolIndex);
     return z;
+  }
+
+  private attachRigToPoolIndex(poolIndex: number, type: ZombieTypeId): void {
+    const asset = this.modelAssets.get(type);
+    if (!asset || !this.assetLoader) return;
+
+    const pool = this.rigFreePools.get(type)!;
+    let rig = pool.pop();
+    if (!rig) {
+      const inst = this.assetLoader.instantiate(asset);
+      rig = {
+        type,
+        root: inst.root,
+        mixer: inst.mixer,
+        action: inst.action,
+      };
+      this.modelGroup.add(rig.root);
+    }
+
+    rig.root.visible = true;
+    if (rig.action) {
+      rig.action.reset().play();
+      // Slight random phase offset so zombies don't march in robotic lockstep
+      rig.mixer?.setTime((poolIndex * 0.17) % Math.max(rig.action.getClip().duration, 0.1));
+    }
+    this.activeRigs[poolIndex] = rig;
   }
 
   /**
@@ -168,6 +257,7 @@ export class ZombiePool {
 
       z.prevPos.copy(z.currPos);
       z.distance += z.speed * fixedDt;
+      this.registry.get(z.type).onFixedTick(z, fixedDt);
 
       const reachedEnd = pathSystem.sampleAtDistance(
         z.distance,
@@ -186,16 +276,17 @@ export class ZombiePool {
 
   /**
    * Variable-rate render sync: interpolates between prevPos and currPos with `alpha`
-   * so 120Hz/144Hz monitors stay fluid from the 60Hz simulation.
+   * and advances skeletal animations by `frameDt`.
    */
-  public syncRender(alpha: number): void {
+  public syncRender(alpha: number, frameDt = 0): void {
     const count = this.activeIndices.length;
+    let instancedSlot = 0;
 
-    for (let slot = 0; slot < count; slot++) {
-      const z = this.records[this.activeIndices[slot]];
+    for (let i = 0; i < count; i++) {
+      const poolIdx = this.activeIndices[i];
+      const z = this.records[poolIdx];
 
       this._interpPos.lerpVectors(z.prevPos, z.currPos, alpha);
-      // Keep character upright horizontally while facing movement direction
       this._flatForward.set(z.forward.x, 0, z.forward.z);
       if (this._flatForward.lengthSq() > 1e-6) {
         this._flatForward.normalize();
@@ -204,13 +295,23 @@ export class ZombiePool {
         this._quat.identity();
       }
 
+      const rig = this.activeRigs[poolIdx];
+      if (rig) {
+        rig.root.position.copy(this._interpPos);
+        rig.root.quaternion.copy(this._quat);
+        if (rig.mixer && frameDt > 0) {
+          rig.mixer.update(frameDt);
+        }
+        continue;
+      }
+
+      // Fallback InstancedMesh box rendering for archetypes without 3D models yet
       const bodyHeight = z.height * 0.72;
       const bodyWidth = z.radius * 1.65;
       this._scale.set(bodyWidth, bodyHeight, bodyWidth);
       this._matrix.compose(this._interpPos, this._quat, this._scale);
-      this.bodyMesh.setMatrixAt(slot, this._matrix);
+      this.bodyMesh.setMatrixAt(instancedSlot, this._matrix);
 
-      // Head sits on top of torso
       const headSize = z.radius * 1.15;
       this._headPos.set(
         this._interpPos.x,
@@ -219,23 +320,23 @@ export class ZombiePool {
       );
       this._scale.set(headSize, headSize, headSize);
       this._matrix.compose(this._headPos, this._quat, this._scale);
-      this.headMesh.setMatrixAt(slot, this._matrix);
+      this.headMesh.setMatrixAt(instancedSlot, this._matrix);
 
-      // Visual indicator: slightly darken tint when sheltered inside a tunnel
       this._colorScratch.copy(z.baseColor);
       if (z.inTunnel) {
         this._colorScratch.multiplyScalar(0.55);
       }
-      this.bodyMesh.setColorAt(slot, this._colorScratch);
+      this.bodyMesh.setColorAt(instancedSlot, this._colorScratch);
 
       this._colorScratch.multiplyScalar(1.18);
-      this.headMesh.setColorAt(slot, this._colorScratch);
+      this.headMesh.setColorAt(instancedSlot, this._colorScratch);
+      instancedSlot++;
     }
 
-    this.bodyMesh.count = count;
-    this.headMesh.count = count;
+    this.bodyMesh.count = instancedSlot;
+    this.headMesh.count = instancedSlot;
 
-    if (count > 0) {
+    if (instancedSlot > 0) {
       this.bodyMesh.instanceMatrix.needsUpdate = true;
       this.headMesh.instanceMatrix.needsUpdate = true;
       if (this.bodyMesh.instanceColor) this.bodyMesh.instanceColor.needsUpdate = true;
@@ -255,6 +356,14 @@ export class ZombiePool {
     const lastSlot = this.activeIndices.length - 1;
     const poolIdx = this.activeIndices[activeSlot];
     this.records[poolIdx].active = false;
+
+    const rig = this.activeRigs[poolIdx];
+    if (rig) {
+      rig.root.visible = false;
+      this.rigFreePools.get(rig.type)?.push(rig);
+      this.activeRigs[poolIdx] = null;
+    }
+
     this.freeIndices.push(poolIdx);
 
     if (activeSlot !== lastSlot) {

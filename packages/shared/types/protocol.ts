@@ -123,6 +123,13 @@ export interface TowerArchetypeConfig {
   baseCost: number;
   footprintRadius: number;
   requiresHighGround?: boolean;
+  /** Path relative to client public/ directory (e.g. "/models/towers/rifleman.glb"). */
+  modelPath?: string;
+  /** Optional SFX paths relative to client public/ directory. */
+  sounds?: {
+    fire?: string;
+    impact?: string;
+  };
   levels: TowerLevelConfig[];
 }
 

@@ -2,7 +2,7 @@
 
 Đặt toàn bộ file model `.glb` (nên nén Draco) cho các loại zombie/enemy vào thư mục này.
 
-## Quy ước đặt tên (khớp `packages/shared/config/zombies.json`)
+## Quy ước đặt tên (khớp `packages/shared/enemies/*.json`)
 - `normal.glb` — Walker (cao ~1.75m)
 - `speedy.glb` — Sprinter (cao ~1.55m)
 - `armored.glb` — Riot Brute (cao ~2.05m)
