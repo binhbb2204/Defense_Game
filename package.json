@@ -4,8 +4,17 @@
   "packageManager": "pnpm@9.15.4",
   "scripts": {
     "dev": "pnpm --filter @tactical-td/client dev",
+    "tools": "pnpm --filter @tactical-td/tools dev",
     "build": "pnpm --filter @tactical-td/client build",
     "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @tactical-td/shared test",
+    "generate:normal": "node packages/shared/enemies/Normal/generate.mjs",
+    "rig:normal": "node packages/shared/enemies/Normal/rig-zombie.mjs",
+    "rig:speedy": "node packages/shared/enemies/Speedy/rig-speedy.mjs",
+    "rig:armored": "node packages/shared/enemies/Armored/rig-armored.mjs",
+    "rig:turret": "node packages/shared/towers/Turret/rig-turret.mjs",
+    "build:turret-upgrades": "node packages/shared/towers/Turret/build-turret-upgrades.mjs",
+    "generate:speedy": "node packages/shared/enemies/Speedy/generate.mjs",
     "tauri:dev": "pnpm --filter @tactical-td/client tauri:dev",
     "tauri:build": "pnpm --filter @tactical-td/client tauri:build"
   }

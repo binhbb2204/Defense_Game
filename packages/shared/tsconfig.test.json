@@ -1,0 +1,26 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": ".test-dist",
+    "rootDir": ".",
+    "noEmit": false,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "index.ts",
+    "types/**/*.ts",
+    "path/**/*.ts",
+    "maps/**/*.ts",
+    "maps/**/*.json",
+    "towers/**/*.ts",
+    "enemies/**/*.ts",
+    "waves/**/*.ts"
+  ],
+  "exclude": [
+    ".test-dist/**",
+    "towers/**/*RigController.ts"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "name": "@tactical-td/tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@tactical-td/shared": "workspace:*",
+    "@tactical-td/vfx": "workspace:*",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "three": "^0.174.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.0.14",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@types/three": "^0.174.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.0.14",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.2"
+  }
+}

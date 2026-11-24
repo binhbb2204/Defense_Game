@@ -1,16 +1,10 @@
-# Enemy 3D Models (`/models/enemies/`)
+# Enemy 3D Models (Single Source of Truth)
 
-Đặt toàn bộ file model `.glb` (nên nén Draco) cho các loại zombie/enemy vào thư mục này.
+Toàn bộ model `.glb` và file nguồn của từng loại enemy được quản lý tập trung tại **`packages/shared/enemies/<TenEnemy>/`** (không cần copy trùng sang `public/`):
 
-## Quy ước đặt tên (khớp `packages/shared/enemies/*.json`)
-- `normal.glb` — Walker (cao ~1.75m)
-- `speedy.glb` — Sprinter (cao ~1.55m)
-- `armored.glb` — Riot Brute (cao ~2.05m)
-- `boss.glb` — Juggernaut Alpha (cao ~3.10m)
+- `packages/shared/enemies/Normal/Normal.glb`
+- `packages/shared/enemies/Speedy/Speedy.glb` (kèm `generate.mjs`)
+- `packages/shared/enemies/Armored/Armored.glb` *(khi sẵn sàng)*
+- `packages/shared/enemies/Boss/Boss.glb` *(khi sẵn sàng)*
 
-## Chuẩn export từ Blender / Blockbench
-- **Định dạng:** `.glb` (Binary glTF 2.0, bật Draco compression nếu nặng).
-- **Tỉ lệ:** `1 unit = 1 meter`.
-- **Gốc tọa độ (Pivot/Origin):** nằm ngay dưới bàn chân (`y = 0`) và chính giữa trục X/Z.
-- **Hướng mặt (Forward):** nhìn về trục `+Z` để khớp hướng di chuyển của `PathSystem`.
-- **Animation clips (tùy chọn cho Phase 4):** đặt tên clip là `Walk`, `Run`, `Death`, `Slam` (cho Boss).
+Client import trực tiếp qua alias `@enemies-assets/<TenEnemy>/<File>.glb?url` (Vite tự phục vụ ở chế độ dev và đóng gói vào `dist/assets/` khi build Web / Tauri).

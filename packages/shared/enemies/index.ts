@@ -1,7 +1,7 @@
-import normal from './normal.json';
-import speedy from './speedy.json';
-import armored from './armored.json';
-import boss from './boss.json';
+import normal from './Normal/config.json';
+import speedy from './Speedy/config.json';
+import armored from './Armored/config.json';
+import boss from './Boss/config.json';
 import type { ZombieArchetypeConfig, ZombieTypeId } from '../types/protocol';
 
 export const ENEMY_CONFIGS: Record<ZombieTypeId, ZombieArchetypeConfig> = {

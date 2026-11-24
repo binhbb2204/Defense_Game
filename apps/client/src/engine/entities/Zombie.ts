@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { ZombieArchetypeConfig, ZombieTypeId } from '@tactical-td/shared';
 import type { AssetLoader, LoadedModelAsset } from '../core/AssetLoader';
 import type { PathSystem } from '../systems/PathSystem';
-import { enemyRegistry, type EnemyRegistry } from './enemies/EnemyRegistry';
+import { enemyRegistry, type IEnemyRegistry } from './enemies/EnemyRegistry';
 
 export interface ZombieRecord {
   readonly poolIndex: number;
@@ -13,6 +13,7 @@ export interface ZombieRecord {
   maxHp: number;
   armor: number;
   speed: number;
+  baseSpeed: number;
   distance: number;
   laneOffset: number;
   radius: number;
@@ -59,7 +60,7 @@ export class ZombiePool {
   private readonly rigFreePools = new Map<ZombieTypeId, ZombieRigInstance[]>();
   private readonly activeRigs: (ZombieRigInstance | null)[];
   private readonly assetLoader: AssetLoader | null;
-  private readonly registry: EnemyRegistry;
+  private readonly registry: IEnemyRegistry;
 
   private nextEntityId = 1;
 
@@ -75,7 +76,7 @@ export class ZombiePool {
   constructor(
     maxCapacity = DEFAULT_MAX_ZOMBIES,
     assetLoader?: AssetLoader,
-    registry: EnemyRegistry = enemyRegistry,
+    registry: IEnemyRegistry = enemyRegistry,
   ) {
     this.maxCapacity = maxCapacity;
     this.assetLoader = assetLoader ?? null;
@@ -97,6 +98,7 @@ export class ZombiePool {
         maxHp: 0,
         armor: 0,
         speed: 0,
+        baseSpeed: 1,
         distance: 0,
         laneOffset: 0,
         radius: 0.45,
@@ -196,6 +198,7 @@ export class ZombiePool {
     z.maxHp = config.maxHp;
     z.armor = config.armor;
     z.speed = config.speed;
+    z.baseSpeed = Math.max(0.1, config.speed);
     z.distance = 0;
     z.laneOffset = laneOffset;
     z.radius = config.radius;
@@ -300,7 +303,9 @@ export class ZombiePool {
         rig.root.position.copy(this._interpPos);
         rig.root.quaternion.copy(this._quat);
         if (rig.mixer && frameDt > 0) {
-          rig.mixer.update(frameDt);
+          // Keep leg cadence locked proportionally to current movement speed (supports slow debuffs)
+          const speedRatio = z.speed / z.baseSpeed;
+          rig.mixer.update(frameDt * speedRatio);
         }
         continue;
       }

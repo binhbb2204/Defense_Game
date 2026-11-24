@@ -193,7 +193,7 @@ export function Icon({ name, className = 'h-5 w-5' }: IconProps) {
 export function towerIconName(id: string, category: string): IconName {
   if (id === 'sniper') return 'crosshair';
   if (id === 'mortar') return 'bomb';
-  if (id === 'rifleman') return 'rifle';
+  if (id === 'turret' || id === 'rifleman') return 'rifle';
   if (category === 'sniper') return 'crosshair';
   if (category === 'explosive') return 'bomb';
   if (category === 'support') return 'wrench';

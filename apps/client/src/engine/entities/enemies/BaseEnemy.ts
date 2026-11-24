@@ -1,57 +1,49 @@
 import type { ZombieArchetypeConfig, ZombieTypeId } from '@tactical-td/shared';
-import type { AssetLoader, LoadedModelAsset } from '../../core/AssetLoader';
+import type { LoadedModelAsset, LoadModelOptions } from '../../core/AssetLoader';
 import type { ZombieRecord } from '../Zombie';
 
+/** Dependency Inversion contract: Enemy classes depend on an abstraction, not concrete AssetLoader. */
+export interface IModelLoader {
+  loadModel(url: string, options?: LoadModelOptions): Promise<LoadedModelAsset>;
+}
+
 /**
- * Abstract Base Class for all Enemy archetypes (SOLID: Single Responsibility & Liskov Substitution).
+ * Data-driven Base Enemy class (SOLID: SRP, OCP, LSP, DIP).
  *
- * Subclasses encapsulate their own 3D model loading options, armor mitigation formulas,
- * and special per-tick abilities (e.g. Boss ground-slam stun) so GameEngine and ZombiePool
- * never hardcode `if (type === 'normal')` branches.
+ * 95% of enemies need ZERO custom TypeScript class — `EnemyRegistry` auto-discovers
+ * `packages/shared/enemies/<Folder>/config.json` + `.glb` and instantiates `BaseEnemy` directly.
+ * Subclass only when an enemy needs unique custom combat/ability code (e.g. Boss slam).
  */
-export abstract class BaseEnemy {
+export class BaseEnemy {
   public readonly config: ZombieArchetypeConfig;
+  public readonly modelUrl: string | null;
 
-  /**
-   * Set to true once the 3D model file (.glb / .fbx) exists in `public/models/enemies/`.
-   * While false, ZombiePool automatically renders this enemy via fast InstancedMesh boxes.
-   */
-  public abstract readonly has3DModel: boolean;
-
-  protected constructor(config: ZombieArchetypeConfig) {
+  constructor(config: ZombieArchetypeConfig, modelUrl: string | null = null) {
     this.config = config;
+    this.modelUrl = modelUrl;
   }
 
   public get id(): ZombieTypeId {
     return this.config.id;
   }
 
-  /** Optional fallback texture path when loading .fbx files with legacy texture references. */
-  protected getFallbackTextureUrl(): string | undefined {
-    return undefined;
-  }
-
-  public async preloadModel(assetLoader: AssetLoader): Promise<LoadedModelAsset | null> {
-    if (!this.has3DModel || !this.config.modelPath) {
+  public async preloadModel(modelLoader: IModelLoader): Promise<LoadedModelAsset | null> {
+    if (!this.modelUrl) {
       return null;
     }
-    return assetLoader.loadModel(this.config.modelPath, {
+    return modelLoader.loadModel(this.modelUrl, {
       targetHeight: this.config.height,
-      fallbackTextureUrl: this.getFallbackTextureUrl(),
     });
   }
 
-  /** Lifecycle hook invoked when a pooled instance of this enemy spawns. */
   public onSpawn(_record: ZombieRecord): void {
-    // Default no-op; subclasses may initialize ability timers or buffs.
+    // Subclasses override for custom spawn logic.
   }
 
-  /** 60Hz deterministic simulation hook for archetype-specific behavior (zero allocations). */
   public onFixedTick(_record: ZombieRecord, _fixedDt: number): void {
-    // Default no-op; overridden by BossEnemy / SpeedyEnemy as needed.
+    // Subclasses override for custom 60Hz abilities.
   }
 
-  /** Polymorphic damage calculation factoring in physical armor & armor penetration. */
   public computeDamageTaken(
     _record: Readonly<ZombieRecord>,
     rawDamage: number,

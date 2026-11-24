@@ -1,13 +1,13 @@
-import { ENEMY_CONFIGS } from '@tactical-td/shared';
+import type { ZombieArchetypeConfig } from '@tactical-td/shared';
 import type { ZombieRecord } from '../Zombie';
 import { BaseEnemy } from './BaseEnemy';
 
+/** Optional behavior override for Boss enemies (ground-slam tower stun). */
 export class BossEnemy extends BaseEnemy {
-  public readonly has3DModel = false;
   public readonly slamIntervalSec = 8.0;
 
-  constructor() {
-    super(ENEMY_CONFIGS.boss);
+  constructor(config: ZombieArchetypeConfig, modelUrl: string | null) {
+    super(config, modelUrl);
   }
 
   public override onFixedTick(_record: ZombieRecord, _fixedDt: number): void {

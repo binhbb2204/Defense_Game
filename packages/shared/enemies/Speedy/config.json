@@ -1,0 +1,17 @@
+{
+  "id": "speedy",
+  "name": "Sprinter",
+  "maxHp": 36,
+  "armor": 0.0,
+  "speed": 7.6,
+  "radius": 0.38,
+  "height": 1.55,
+  "cashReward": 15,
+  "baseDamage": 3,
+  "color": "#d9a441",
+  "modelPath": "Speedy_Zombie.glb",
+  "sounds": {
+    "hit": "/sounds/enemies/flesh_hit.ogg",
+    "death": "/sounds/enemies/zombie_death.ogg"
+  }
+}

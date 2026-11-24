@@ -1,0 +1,726 @@
+{
+  "version": 3,
+  "id": "road_geometry_test_scene",
+  "name": "Road Geometry Test Scene (All Joint Cases)",
+  "bounds": {
+    "width": 160,
+    "depth": 120
+  },
+  "baseHp": 100,
+  "startingCash": 500,
+  "defaultRoadWidth": 3.6,
+  "obstacles": [],
+  "elevatedZones": [],
+  "customModels": [],
+  "nodes": [
+    {
+      "id": "t1_a",
+      "x": -60,
+      "y": 0,
+      "z": -48,
+      "role": "spawn",
+      "label": "T1 Straight Start"
+    },
+    {
+      "id": "t1_b",
+      "x": -48,
+      "y": 0,
+      "z": -48,
+      "role": "normal"
+    },
+    {
+      "id": "t1_c",
+      "x": -36,
+      "y": 0,
+      "z": -48,
+      "role": "normal"
+    },
+    {
+      "id": "t1_d",
+      "x": -24,
+      "y": 0,
+      "z": -48,
+      "role": "base",
+      "label": "T1 Straight End"
+    },
+    {
+      "id": "t2_a",
+      "x": -12,
+      "y": 0,
+      "z": -52,
+      "role": "spawn",
+      "label": "T2 90deg"
+    },
+    {
+      "id": "t2_b",
+      "x": -12,
+      "y": 0,
+      "z": -40,
+      "role": "normal"
+    },
+    {
+      "id": "t2_c",
+      "x": 2,
+      "y": 0,
+      "z": -40,
+      "role": "base"
+    },
+    {
+      "id": "t3_a",
+      "x": 14,
+      "y": 0,
+      "z": -52,
+      "role": "spawn",
+      "label": "T3 45deg"
+    },
+    {
+      "id": "t3_b",
+      "x": 26,
+      "y": 0,
+      "z": -52,
+      "role": "normal"
+    },
+    {
+      "id": "t3_c",
+      "x": 36,
+      "y": 0,
+      "z": -42,
+      "role": "base"
+    },
+    {
+      "id": "t4_a",
+      "x": 62,
+      "y": 0,
+      "z": -52,
+      "role": "spawn",
+      "label": "T4 15deg Hairpin"
+    },
+    {
+      "id": "t4_b",
+      "x": 42,
+      "y": 0,
+      "z": -52,
+      "role": "normal"
+    },
+    {
+      "id": "t4_c",
+      "x": 61.3,
+      "y": 0,
+      "z": -46.8,
+      "role": "base"
+    },
+    {
+      "id": "t5_a",
+      "x": -60,
+      "y": 0,
+      "z": -28,
+      "role": "spawn",
+      "label": "T5 Dead End"
+    },
+    {
+      "id": "t5_b",
+      "x": -42,
+      "y": 0,
+      "z": -28,
+      "role": "normal"
+    },
+    {
+      "id": "t6_w",
+      "x": -30,
+      "y": 0,
+      "z": -28,
+      "role": "spawn",
+      "label": "T6 T-Junction"
+    },
+    {
+      "id": "t6_c",
+      "x": -18,
+      "y": 0,
+      "z": -28,
+      "role": "normal"
+    },
+    {
+      "id": "t6_e",
+      "x": -6,
+      "y": 0,
+      "z": -28,
+      "role": "base"
+    },
+    {
+      "id": "t6_s",
+      "x": -18,
+      "y": 0,
+      "z": -16,
+      "role": "base"
+    },
+    {
+      "id": "t7_w",
+      "x": 4,
+      "y": 0,
+      "z": -24,
+      "role": "spawn",
+      "label": "T7 4-Way"
+    },
+    {
+      "id": "t7_c",
+      "x": 16,
+      "y": 0,
+      "z": -24,
+      "role": "normal"
+    },
+    {
+      "id": "t7_e",
+      "x": 28,
+      "y": 0,
+      "z": -24,
+      "role": "base"
+    },
+    {
+      "id": "t7_n",
+      "x": 16,
+      "y": 0,
+      "z": -36,
+      "role": "spawn"
+    },
+    {
+      "id": "t7_s",
+      "x": 16,
+      "y": 0,
+      "z": -12,
+      "role": "base"
+    },
+    {
+      "id": "t8_in",
+      "x": 38,
+      "y": 0,
+      "z": -24,
+      "role": "spawn",
+      "label": "T8 Y-Fork+Merge"
+    },
+    {
+      "id": "t8_f",
+      "x": 48,
+      "y": 0,
+      "z": -24,
+      "role": "normal"
+    },
+    {
+      "id": "t8_top",
+      "x": 58,
+      "y": 0,
+      "z": -28.2,
+      "role": "normal"
+    },
+    {
+      "id": "t8_bot",
+      "x": 58,
+      "y": 0,
+      "z": -19.8,
+      "role": "normal"
+    },
+    {
+      "id": "t8_m",
+      "x": 68,
+      "y": 0,
+      "z": -24,
+      "role": "normal"
+    },
+    {
+      "id": "t8_out",
+      "x": 76,
+      "y": 0,
+      "z": -24,
+      "role": "base"
+    },
+    {
+      "id": "t9_a",
+      "x": -60,
+      "y": 0,
+      "z": 0,
+      "role": "spawn",
+      "label": "T9 Short Seg (<width)"
+    },
+    {
+      "id": "t9_b",
+      "x": -48,
+      "y": 0,
+      "z": 0,
+      "role": "normal"
+    },
+    {
+      "id": "t9_c",
+      "x": -45.8,
+      "y": 0,
+      "z": 0,
+      "role": "normal"
+    },
+    {
+      "id": "t9_d",
+      "x": -34,
+      "y": 0,
+      "z": 0,
+      "role": "base"
+    },
+    {
+      "id": "t9_b_s",
+      "x": -48,
+      "y": 0,
+      "z": 10,
+      "role": "base"
+    },
+    {
+      "id": "t9_c_n",
+      "x": -45.8,
+      "y": 0,
+      "z": -10,
+      "role": "base"
+    },
+    {
+      "id": "t10_a",
+      "x": -24,
+      "y": 0,
+      "z": 0,
+      "role": "spawn",
+      "label": "T10 Mixed Widths (8m / 3.4m)"
+    },
+    {
+      "id": "t10_b",
+      "x": -10,
+      "y": 0,
+      "z": 0,
+      "role": "normal"
+    },
+    {
+      "id": "t10_c",
+      "x": 4,
+      "y": 0,
+      "z": 0,
+      "role": "normal"
+    },
+    {
+      "id": "t10_d",
+      "x": 18,
+      "y": 0,
+      "z": 0,
+      "role": "base"
+    },
+    {
+      "id": "t10_branch",
+      "x": 4,
+      "y": 0,
+      "z": 14,
+      "role": "base"
+    },
+    {
+      "id": "t11_a",
+      "x": 30,
+      "y": 0,
+      "z": -4,
+      "role": "normal",
+      "label": "T11 Closed Loop"
+    },
+    {
+      "id": "t11_b",
+      "x": 46,
+      "y": 0,
+      "z": -4,
+      "role": "normal"
+    },
+    {
+      "id": "t11_c",
+      "x": 46,
+      "y": 0,
+      "z": 10,
+      "role": "normal"
+    },
+    {
+      "id": "t11_d",
+      "x": 30,
+      "y": 0,
+      "z": 10,
+      "role": "normal"
+    },
+    {
+      "id": "t12_a1",
+      "x": -60,
+      "y": 0,
+      "z": 28,
+      "role": "spawn",
+      "label": "T12 Parallel 1"
+    },
+    {
+      "id": "t12_b1",
+      "x": -26,
+      "y": 0,
+      "z": 28,
+      "role": "base"
+    },
+    {
+      "id": "t12_a2",
+      "x": -60,
+      "y": 0,
+      "z": 35,
+      "role": "spawn",
+      "label": "T12 Parallel 2"
+    },
+    {
+      "id": "t12_b2",
+      "x": -26,
+      "y": 0,
+      "z": 35,
+      "role": "base"
+    },
+    {
+      "id": "t13_a",
+      "x": -10,
+      "y": 0,
+      "z": 28,
+      "role": "spawn",
+      "label": "T13 Bezier S-Turn"
+    },
+    {
+      "id": "t13_m",
+      "x": 14,
+      "y": 0,
+      "z": 36,
+      "role": "normal"
+    },
+    {
+      "id": "t13_b",
+      "x": 38,
+      "y": 0,
+      "z": 44,
+      "role": "base"
+    }
+  ],
+  "segments": [
+    {
+      "id": "s_t1_1",
+      "a": "t1_a",
+      "b": "t1_b",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t1_2",
+      "a": "t1_b",
+      "b": "t1_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t1_3",
+      "a": "t1_c",
+      "b": "t1_d",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t2_1",
+      "a": "t2_a",
+      "b": "t2_b",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t2_2",
+      "a": "t2_b",
+      "b": "t2_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t3_1",
+      "a": "t3_a",
+      "b": "t3_b",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t3_2",
+      "a": "t3_b",
+      "b": "t3_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t4_1",
+      "a": "t4_a",
+      "b": "t4_b",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t4_2",
+      "a": "t4_b",
+      "b": "t4_c",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t5_1",
+      "a": "t5_a",
+      "b": "t5_b",
+      "width": 4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t6_1",
+      "a": "t6_w",
+      "b": "t6_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t6_2",
+      "a": "t6_c",
+      "b": "t6_e",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t6_3",
+      "a": "t6_c",
+      "b": "t6_s",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t7_w",
+      "a": "t7_w",
+      "b": "t7_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t7_e",
+      "a": "t7_c",
+      "b": "t7_e",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t7_n",
+      "a": "t7_n",
+      "b": "t7_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t7_s",
+      "a": "t7_c",
+      "b": "t7_s",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t8_in",
+      "a": "t8_in",
+      "b": "t8_f",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t8_f1",
+      "a": "t8_f",
+      "b": "t8_top",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t8_f2",
+      "a": "t8_f",
+      "b": "t8_bot",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t8_m1",
+      "a": "t8_top",
+      "b": "t8_m",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t8_m2",
+      "a": "t8_bot",
+      "b": "t8_m",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t8_out",
+      "a": "t8_m",
+      "b": "t8_out",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t9_1",
+      "a": "t9_a",
+      "b": "t9_b",
+      "width": 3.8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t9_short",
+      "a": "t9_b",
+      "b": "t9_c",
+      "width": 3.8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t9_3",
+      "a": "t9_c",
+      "b": "t9_d",
+      "width": 3.8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t9_b_s",
+      "a": "t9_b",
+      "b": "t9_b_s",
+      "width": 3.8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t9_c_n",
+      "a": "t9_c",
+      "b": "t9_c_n",
+      "width": 3.8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t10_1",
+      "a": "t10_a",
+      "b": "t10_b",
+      "width": 8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t10_2",
+      "a": "t10_b",
+      "b": "t10_c",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t10_3",
+      "a": "t10_c",
+      "b": "t10_d",
+      "width": 8,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t10_4",
+      "a": "t10_c",
+      "b": "t10_branch",
+      "width": 3.4,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t11_1",
+      "a": "t11_a",
+      "b": "t11_b",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t11_2",
+      "a": "t11_b",
+      "b": "t11_c",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t11_3",
+      "a": "t11_c",
+      "b": "t11_d",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t11_4",
+      "a": "t11_d",
+      "b": "t11_a",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t12_1",
+      "a": "t12_a1",
+      "b": "t12_b1",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t12_2",
+      "a": "t12_a2",
+      "b": "t12_b2",
+      "width": 3.6,
+      "kind": "straight"
+    },
+    {
+      "id": "s_t13_1",
+      "a": "t13_a",
+      "b": "t13_m",
+      "width": 3.8,
+      "kind": "curve",
+      "control": {
+        "x": 2,
+        "y": 0,
+        "z": 4
+      }
+    },
+    {
+      "id": "s_t13_2",
+      "a": "t13_m",
+      "b": "t13_b",
+      "width": 3.8,
+      "kind": "curve",
+      "control": {
+        "x": 24,
+        "y": 0,
+        "z": 50
+      }
+    }
+  ],
+  "props": [],
+  "buildPads": [],
+  "waypoints": [
+    {
+      "id": "t1_a",
+      "label": "T1 Straight Start",
+      "x": -60,
+      "y": 0,
+      "z": -48,
+      "roadWidth": 3.6,
+      "segmentMode": "straight"
+    },
+    {
+      "id": "t1_b",
+      "x": -48,
+      "y": 0,
+      "z": -48,
+      "roadWidth": 3.6,
+      "segmentMode": "straight"
+    },
+    {
+      "id": "t1_c",
+      "x": -36,
+      "y": 0,
+      "z": -48,
+      "roadWidth": 3.6,
+      "segmentMode": "straight"
+    },
+    {
+      "id": "t1_d",
+      "label": "T1 Straight End",
+      "x": -24,
+      "y": 0,
+      "z": -48,
+      "roadWidth": 3.6
+    }
+  ],
+  "sceneGlbPath": "packages/shared/maps/road_geometry_test_scene_scene.glb"
+}

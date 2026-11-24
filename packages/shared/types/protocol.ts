@@ -1,10 +1,61 @@
+export interface Vec2 {
+  x: number;
+  z: number;
+}
+
 export interface Vec3 {
   x: number;
   y: number;
   z: number;
 }
 
+export type WaypointSegmentMode = 'straight' | 'curve';
+export type WaypointElevationMode = 'ground' | 'elevated' | 'bridge' | 'tunnel';
+export type WaypointSlopeMode = 'straight_slope' | 'pchip_smooth';
+
+export const MAP_SCHEMA_VERSION = 4;
+
+export type RoadNodeRole = 'normal' | 'spawn' | 'base';
+
+export interface RoadNode {
+  id: string;
+  x: number;
+  y: number;
+  z: number;
+  role: RoadNodeRole;
+  label?: string;
+  /** True keeps a sharp corner even when incident segments are smoothed curves. */
+  corner?: boolean;
+}
+
+export type RoadSegmentKind = 'straight' | 'curve';
+
+export interface RoadSegment {
+  id: string;
+  a: string;
+  b: string;
+  width: number;
+  kind: RoadSegmentKind;
+  /** Optional explicit quadratic control handle (used by live Road tool handles / legacy curves). */
+  control?: Vec3;
+  /** Tension 0..1 for derived Catmull-Rom curves (0 = nearly straight, 0.5 = default, 1 = loose). */
+  tension?: number;
+  /** When true, routes traverse only a -> b (used by Shape Reverse / directional lanes). */
+  oneWay?: boolean;
+  /** Relative routing preference when multiple outgoing paths leave a junction (default = 1, equal split). */
+  weight?: number;
+  elevationMode?: WaypointElevationMode;
+  slopeMode?: WaypointSlopeMode;
+  isTunnel?: boolean;
+  isOverpass?: boolean;
+  roadPartAsset?: string;
+}
+
 export interface WaypointNode {
+  /** Optional stable node identifier for editor tracking. */
+  id?: string;
+  /** Optional display label (e.g., Gate North, Overpass Entry). */
+  label?: string;
   x: number;
   y: number;
   z: number;
@@ -14,6 +65,45 @@ export interface WaypointNode {
   isTunnel?: boolean;
   /** Marks elevated bridge/overpass deck section. */
   isOverpass?: boolean;
+  /** Outgoing segment geometry mode from this node to the next node. */
+  segmentMode?: WaypointSegmentMode;
+  /** 2D horizontal Quadratic Bezier control point for outgoing curve segment (when segmentMode === 'curve'). */
+  curveControl?: Vec2;
+  /** Explicit Network Anarchy elevation mode for this node / outgoing span. */
+  elevationMode?: WaypointElevationMode;
+  /** Vertical slope interpolation profile for outgoing span: linear ramp vs monotone PCHIP. */
+  slopeMode?: WaypointSlopeMode;
+  /** Optional imported 3D model filename bent along outgoing segment. */
+  roadPartAsset?: string;
+}
+
+export interface PathNode extends WaypointNode {
+  id: string;
+  label?: string;
+}
+
+export interface MapPath {
+  id: string;
+  name: string;
+  color: string;
+  width: number;
+  loop: boolean;
+  visible?: boolean;
+  locked?: boolean;
+  nodes: PathNode[];
+}
+
+export interface MapJunctionOut {
+  pathId: string;
+  weight: number;
+}
+
+export interface MapJunction {
+  id: string;
+  name?: string;
+  pos: Vec3;
+  inPaths: string[];
+  outPaths: MapJunctionOut[];
 }
 
 export type ObstacleKind =
@@ -32,6 +122,9 @@ export interface MapObstacle {
   /** True if this mesh contributes to three-mesh-bvh True Line-of-Sight occlusion. */
   blocksLoS: boolean;
   color?: string;
+  visible?: boolean;
+  locked?: boolean;
+  customProperties?: Record<string, string | number | boolean>;
 }
 
 export type TowerCategory = 'infantry' | 'sniper' | 'explosive' | 'support';
@@ -44,6 +137,27 @@ export interface ElevatedZone {
   size: Vec3;
   rotationY?: number;
   allowedCategories?: TowerCategory[];
+  visible?: boolean;
+  locked?: boolean;
+  customProperties?: Record<string, string | number | boolean>;
+}
+
+export type CustomModelFormat = 'glb' | 'gltf' | 'fbx' | 'obj';
+
+export interface MapCustomModel {
+  id: string;
+  name: string;
+  assetName: string;
+  format: CustomModelFormat;
+  position: Vec3;
+  scale: Vec3;
+  rotationY: number;
+  blocksLoS: boolean;
+  isHighGround?: boolean;
+  color?: string;
+  visible?: boolean;
+  locked?: boolean;
+  customProperties?: Record<string, string | number | boolean>;
 }
 
 export interface MapDefinition {
@@ -57,9 +171,18 @@ export interface MapDefinition {
   baseHp: number;
   startingCash: number;
   defaultRoadWidth: number;
+  /** Graph v3 representation (Cities: Skylines style nodes + segments). */
+  nodes?: RoadNode[];
+  segments?: RoadSegment[];
+  /** Legacy v1 waypoints kept synced for backward-compatible runtime pathing & sims. */
   waypoints: WaypointNode[];
+  /** Legacy v2 lane array (migrated automatically to v3 graph on load). */
+  paths?: MapPath[];
+  junctions?: MapJunction[];
   obstacles: MapObstacle[];
   elevatedZones: ElevatedZone[];
+  customModels?: MapCustomModel[];
+  sceneGlbPath?: string;
 }
 
 export type ZombieTypeId = 'normal' | 'speedy' | 'armored' | 'boss';
@@ -104,8 +227,14 @@ export interface WaveDefinition {
   groups: WaveSpawnGroup[];
 }
 
+export type TowerUpgradePathId = 'top' | 'bottom';
+
 export interface TowerLevelConfig {
   level: number;
+  pathId?: TowerUpgradePathId;
+  pathName?: string;
+  modelPath?: string;
+  vfxPreset?: string;
   upgradeCost: number;
   damage: number;
   fireRate: number;
@@ -114,6 +243,11 @@ export interface TowerLevelConfig {
   projectileSpeed: number;
   splashRadius?: number;
   friendlyStunDuration?: number;
+  detectHidden?: boolean;
+  pierceLead?: boolean;
+  hitFlying?: boolean;
+  armorPen?: number;
+  branches?: Partial<Record<TowerUpgradePathId, TowerLevelConfig>>;
 }
 
 export interface TowerArchetypeConfig {

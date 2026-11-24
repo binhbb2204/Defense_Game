@@ -7,15 +7,28 @@
   "types": "./index.ts",
   "exports": {
     ".": "./index.ts",
+    "./path": "./path/index.ts",
     "./maps": "./maps/index.ts",
     "./towers": "./towers/index.ts",
+    "./towers/Turret": "./towers/Turret/TurretRigController.ts",
     "./enemies": "./enemies/index.ts",
     "./waves": "./waves/index.ts"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node scripts/run-tests.mjs"
+  },
+  "peerDependencies": {
+    "three": "^0.174.0"
+  },
+  "peerDependenciesMeta": {
+    "three": {
+      "optional": true
+    }
   },
   "devDependencies": {
+    "@types/three": "^0.174.0",
+    "three": "^0.174.0",
     "typescript": "^5.8.2"
   }
 }

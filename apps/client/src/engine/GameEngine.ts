@@ -1,5 +1,6 @@
 import {
   HIGHWAY_01_MAP,
+  syncGraphToLegacyWaypoints,
   WAVE_DEFINITIONS,
   type MapDefinition,
   type ZombieTypeId,
@@ -60,10 +61,14 @@ export class GameEngine {
     this.baseHp = mapData.baseHp;
     this.cash = mapData.startingCash;
 
+    const runtimeMap =
+      mapData.nodes?.length && mapData.segments?.length
+        ? syncGraphToLegacyWaypoints(mapData)
+        : mapData;
     this.world = new World(container);
     this.assetLoader = new AssetLoader();
-    this.pathSystem = new PathSystem(mapData.waypoints, mapData.defaultRoadWidth, 512);
-    this.world.buildPrototypeMap(mapData, this.pathSystem);
+    this.pathSystem = new PathSystem(runtimeMap.waypoints, runtimeMap.defaultRoadWidth, 512);
+    this.world.buildPrototypeMap(runtimeMap, this.pathSystem);
     this.world.setDebugVisible(this.showDebugPath);
 
     this.zombiePool = new ZombiePool(1024, this.assetLoader, enemyRegistry);

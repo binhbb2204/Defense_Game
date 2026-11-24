@@ -3,6 +3,10 @@ import type { ElevatedZone, MapDefinition, MapObstacle } from '@tactical-td/shar
 import type { PathSystem } from '../systems/PathSystem';
 
 const UP_AXIS = new THREE.Vector3(0, 1, 0);
+const MIN_ZOOM_DISTANCE = 3.5;
+const MAX_ZOOM_DISTANCE = 88;
+const MIN_PITCH_RAD = THREE.MathUtils.degToRad(10);
+const MAX_PITCH_RAD = THREE.MathUtils.degToRad(80);
 
 /**
  * Pure Three.js 3D World controller (strictly isolated from React).
@@ -36,6 +40,8 @@ export class World {
   private desiredTarget = new THREE.Vector3(0, 0, 0);
   private yaw = Math.PI * 0.22;
   private desiredYaw = Math.PI * 0.22;
+  private pitchOffset = 0;
+  private desiredPitchOffset = 0;
   private zoomDistance = 54;
   private desiredZoomDistance = 54;
 
@@ -50,6 +56,7 @@ export class World {
   private readonly _right = new THREE.Vector3();
   private readonly _moveDelta = new THREE.Vector3();
   private readonly _desiredPos = new THREE.Vector3();
+  private readonly _lookTarget = new THREE.Vector3();
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -80,7 +87,7 @@ export class World {
     // 2. Camera
     const width = Math.max(container.clientWidth, 1);
     const height = Math.max(container.clientHeight, 1);
-    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.5, 320);
+    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 320);
 
     // 3. Renderer (tuned for crisp visuals within tight Desktop/Tauri RAM budget)
     this.renderer = new THREE.WebGLRenderer({
@@ -177,6 +184,7 @@ export class World {
   public resetCamera(): void {
     this.desiredTarget.set(0, 0, 0);
     this.desiredYaw = Math.PI * 0.22;
+    this.desiredPitchOffset = 0;
     this.desiredZoomDistance = 54;
   }
 
@@ -192,8 +200,8 @@ export class World {
     if (this.keysPressed.has('KeyQ')) this.desiredYaw += rotateSpeed * dt;
     if (this.keysPressed.has('KeyE')) this.desiredYaw -= rotateSpeed * dt;
 
-    // Keyboard Pan (WASD / Arrows) scaled with zoom altitude
-    const panSpeed = 20 + this.zoomDistance * 0.55;
+    // Keyboard Pan (WASD / Arrows) scaled smoothly from close-up inspection to tactical overview
+    const panSpeed = 4 + this.zoomDistance * 0.65;
     let moveForward = 0;
     let moveRight = 0;
     if (this.keysPressed.has('KeyW') || this.keysPressed.has('ArrowUp')) moveForward += 1;
@@ -219,6 +227,7 @@ export class World {
     const damp = 1 - Math.exp(-10 * dt);
     this.target.lerp(this.desiredTarget, damp);
     this.yaw += (this.desiredYaw - this.yaw) * damp;
+    this.pitchOffset += (this.desiredPitchOffset - this.pitchOffset) * damp;
     this.zoomDistance += (this.desiredZoomDistance - this.zoomDistance) * damp;
 
     this.applyCameraTransform();
@@ -231,30 +240,42 @@ export class World {
   private snapCamera(): void {
     this.target.copy(this.desiredTarget);
     this.yaw = this.desiredYaw;
+    this.pitchOffset = this.desiredPitchOffset;
     this.zoomDistance = this.desiredZoomDistance;
     this.applyCameraTransform();
   }
 
   private applyCameraTransform(): void {
-    // Pitch dynamically flattens slightly when zooming close for LoS inspection
-    const zoomAlpha = (this.zoomDistance - 18) / (84 - 18);
-    const pitchRad = THREE.MathUtils.lerp(
-      THREE.MathUtils.degToRad(34),
+    // Pitch dynamically flattens when zooming close for street-level model & LoS inspection
+    const zoomAlpha =
+      (this.zoomDistance - MIN_ZOOM_DISTANCE) / (MAX_ZOOM_DISTANCE - MIN_ZOOM_DISTANCE);
+    const clampedZoom = Math.max(0, Math.min(1, zoomAlpha));
+    const basePitchRad = THREE.MathUtils.lerp(
+      THREE.MathUtils.degToRad(18),
       THREE.MathUtils.degToRad(60),
-      Math.max(0, Math.min(1, zoomAlpha)),
+      Math.pow(clampedZoom, 0.72),
     );
+    const pitchRad = THREE.MathUtils.clamp(
+      basePitchRad + this.pitchOffset,
+      MIN_PITCH_RAD,
+      MAX_PITCH_RAD,
+    );
+
+    // Raise focus slightly to character chest height (~1m) when zoomed in close
+    const closeAlpha = 1 - Math.min(1, (this.zoomDistance - MIN_ZOOM_DISTANCE) / 14);
+    this._lookTarget.set(this.target.x, this.target.y + closeAlpha * 0.95, this.target.z);
 
     const horizontalDist = Math.cos(pitchRad) * this.zoomDistance;
     const verticalDist = Math.sin(pitchRad) * this.zoomDistance;
 
     this._desiredPos.set(
-      this.target.x + Math.sin(this.yaw) * horizontalDist,
-      this.target.y + verticalDist,
-      this.target.z + Math.cos(this.yaw) * horizontalDist,
+      this._lookTarget.x + Math.sin(this.yaw) * horizontalDist,
+      Math.max(0.45, this._lookTarget.y + verticalDist),
+      this._lookTarget.z + Math.cos(this.yaw) * horizontalDist,
     );
 
     this.camera.position.copy(this._desiredPos);
-    this.camera.lookAt(this.target);
+    this.camera.lookAt(this._lookTarget);
   }
 
   private clampDesiredTarget(): void {
@@ -650,6 +671,11 @@ export class World {
 
     if (this.pointerMode === 'orbit') {
       this.desiredYaw -= dx * 0.0065;
+      this.desiredPitchOffset = THREE.MathUtils.clamp(
+        this.desiredPitchOffset + dy * 0.0045,
+        THREE.MathUtils.degToRad(-35),
+        THREE.MathUtils.degToRad(35),
+      );
     } else if (this.pointerMode === 'pan') {
       const panFactor = this.zoomDistance * 0.0018;
       this._forward.set(-Math.sin(this.yaw), 0, -Math.cos(this.yaw));
@@ -667,10 +693,10 @@ export class World {
 
   private readonly onWheel = (e: WheelEvent): void => {
     e.preventDefault();
-    const zoomStep = Math.sign(e.deltaY) * 4.5;
+    const factor = e.deltaY > 0 ? 1.14 : 1 / 1.14;
     this.desiredZoomDistance = Math.max(
-      18,
-      Math.min(84, this.desiredZoomDistance + zoomStep),
+      MIN_ZOOM_DISTANCE,
+      Math.min(MAX_ZOOM_DISTANCE, this.desiredZoomDistance * factor),
     );
   };
 

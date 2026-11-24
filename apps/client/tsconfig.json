@@ -4,6 +4,11 @@
     "jsx": "react-jsx",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@enemies-assets/*": ["../../packages/shared/enemies/*"],
+      "@towers-assets/*": ["../../packages/shared/towers/*"]
+    },
     "noEmit": true
   },
   "include": ["src"]

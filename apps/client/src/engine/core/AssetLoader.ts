@@ -145,6 +145,9 @@ export class AssetLoader {
 
       mesh.castShadow = true;
       mesh.receiveShadow = true;
+      if ((mesh as THREE.SkinnedMesh).isSkinnedMesh) {
+        mesh.frustumCulled = false;
+      }
 
       if (!isFbx && !explicitTexture) {
         // GLTF/GLB already provides a valid PBR MeshStandardMaterial with embedded texture & flipY=false
